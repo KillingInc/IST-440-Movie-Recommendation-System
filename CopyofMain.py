@@ -27,8 +27,8 @@ def save_users(users):
     with open('users.json', 'w') as file:
         json.dump(users, file)
 
-# HTML templates as strings
-login_template = """
+# HTML template for the login form
+login_form_template = """
 <!DOCTYPE html>
 <html>
 <head>
@@ -36,15 +36,6 @@ login_template = """
 </head>
 <body>
     <h2>Login</h2>
-    {% with messages = get_flashed_messages() %}
-    {% if messages %}
-    <ul>
-        {% for message in messages %}
-        <li style="color: {% if 'error' in message %}red{% else %}green{% endif %}">{{ message }}</li>
-        {% endfor %}
-    </ul>
-    {% endif %}
-    {% endwith %}
     <form action="/login" method="post">
         <input type="text" name="username" placeholder="Username" required>
         <input type="password" name="password" placeholder="Password" required>
@@ -55,66 +46,29 @@ login_template = """
 </html>
 """
 
-register_template = """
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Register</title>
-</head>
-<body>
-    <h2>Create an Account</h2>
-    {% with messages = get_flashed_messages() %}
-    {% if messages %}
-    <ul>
-        {% for message in messages %}
-        <li style="color: {% if 'error' in message %}red{% else %}green{% endif %}">{{ message }}</li>
-        {% endfor %}
-    </ul>
-    {% endif %}
-    {% endwith %}
-    <form action="/create_account" method="post">
-        <input type="text" name="username" placeholder="Username" required>
-        <input type="password" name="password" placeholder="Password" required>
-        <button type="submit">Create Account</button>
-    </form>
-    <a href="/">Back to Login</a>
-</body>
-</html>
-"""
+# Dummy user data for demonstration (replace with your user database)
+dummy_users = {
+    "user1": "password1",
+    "user2": "password2",
+}
 
-@app.route('/')
-def home():
-    return redirect(url_for('login'))
-
+# Route for login page
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         # Handle login form submission
-        # ...
-        pass
-        # Render the login page if the request method is not POST
-    return render_template_string(login_template)
+        username = request.form.get("username")
+        password = request.form.get("password")
 
-@app.route('/register', methods=['GET', 'POST'])
-def register():
-    if request.method == 'POST':
-        # Handle registration form submission
-        # ...
-        pass
-    return render_template_string(register_template)
+        # Check if the username and password match a user in the dummy user data
+        if username in dummy_users and dummy_users[username] == password:
+            # Successful login
+            session['username'] = username
+            return redirect(url_for('dashboard'))
+        else:
+            flash('Invalid username or password', 'error')
 
-@app.route('/dashboard')
-def dashboard():
-    # Check for authentication
-    if 'username' in session:
-        return 'Welcome, ' + session['username'] + '!'
-    else:
-        return redirect(url_for('login'))
-
-@app.route('/logout')
-def logout():
-    session.pop('username', None)
-    return redirect(url_for('login'))
+    return render_template_string(login_form_template)
 
 
 # load the nlp model and tfidf vectorizer from disk
