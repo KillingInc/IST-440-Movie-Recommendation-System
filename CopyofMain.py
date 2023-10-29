@@ -91,8 +91,9 @@ def login():
     if request.method == 'POST':
         # Handle login form submission
         # ...
-
-    return render_template_string(login_template)
+    else:
+        # Render the login page if the request method is not POST
+        return render_template_string(login_template)
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
