@@ -30,7 +30,21 @@
       $("#myModal").modal('show');
     });
   </script>
-
+<style>
+        /* Add CSS styles for the message element */
+        .success-message {
+            display: none;
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            position: fixed;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+        }
+</style>
 </head>
 
 <body id="content" style="font-family: 'Noto Sans JP', sans-serif;">
@@ -127,10 +141,34 @@
                     <label for="password">Password</label>
                     <input type="password" name="password" id="password" class="form-control" required>
                 </div>
-                <button type="button" class="btn btn-primary" onclick="toggleLoginForm()">Login</button>
+                <button type="button" class="btn btn-primary" onclick="login()">Login</button>
             </form>
         </div>
+
+        <!-- Success message -->
+        <div id="successMessage" class="success-message">You have successfully logged in</div>
     </div>
+
+    <script>
+        function login() {
+            // Toggle display of the login form
+            var loginForm = document.querySelector('.login-form');
+            loginForm.style.display = (loginForm.style.display === 'none' || loginForm.style.display === '') ? 'block' : 'none';
+
+            // Show the success message
+            var successMessage = document.getElementById('successMessage');
+            successMessage.style.display = 'block';
+
+            // Set a timeout to make the success message fade away after 3 seconds
+            setTimeout(function() {
+                successMessage.style.opacity = '0';
+                setTimeout(function() {
+                    successMessage.style.display = 'none';
+                    successMessage.style.opacity = '1';
+                }, 1000); // After the fade out animation is complete (1 second)
+            }, 3000); // Display the message for 3 seconds
+        }
+    </script>
 
 	
 	<footer class="footer">
@@ -158,10 +196,6 @@
         loginForm.style.display = 'block';
     }
 
-	function toggleLoginForm() {
-            var loginForm = document.querySelector('.login-form');
-            loginForm.style.display = (loginForm.style.display === 'none' || loginForm.style.display === '') ? 'block' : 'none';
-	}
 	  
     // Call the showLoginForm function when needed
     $(document).ready(function() {
